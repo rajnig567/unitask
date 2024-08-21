@@ -68,20 +68,12 @@ class CartTile extends StatelessWidget {
                             .read<HomeProvider>()
                             .removeSingleProductFromCart(product: product);
                       } else {
-                        context.showAlertDialog(
-                          title: 'Alert!!',
-                          message: 'Are you sure you want to remove this product?',
-                          btn1Text: 'Remove',
-                          btn1Tap: () {
-                            context
-                                .read<HomeProvider>()
-                                .removeProductFromCart(product: product);
-                          },
-                        );
+                        removeProduct(context);
                       }
                     },
                     icon: const Icon(
-                      Icons.remove_circle_outline_rounded,
+                      Icons.remove_circle,
+                      color: Colors.orange,
                     ),
                   ),
                   Text(
@@ -101,24 +93,14 @@ class CartTile extends StatelessWidget {
                       }
                     },
                     icon: const Icon(
-                      Icons.add_circle_outline_rounded,
+                      Icons.add_circle,
+                      color: Colors.orange,
                     ),
                   ),
                 ],
               ),
               GestureDetector(
-                onTap: () {
-                  context.showAlertDialog(
-                    title: 'Alert!!',
-                    message: 'Are you sure you want to remove this product?',
-                    btn1Text: 'Remove',
-                    btn1Tap: () {
-                      context
-                          .read<HomeProvider>()
-                          .removeProductFromCart(product: product);
-                    },
-                  );
-                },
+                onTap: () => removeProduct(context),
                 child: Text(
                   'Remove',
                   style: TextStyle(color: AppColors.redColor, fontSize: 12),
@@ -128,6 +110,19 @@ class CartTile extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void removeProduct(BuildContext context){
+    context.showAlertDialog(
+      title: 'Alert!!',
+      message: 'Are you sure you want to remove this product?',
+      btn1Text: 'Remove',
+      btn1Tap: () {
+        context
+            .read<HomeProvider>()
+            .removeProductFromCart(product: product);
+      },
     );
   }
 }

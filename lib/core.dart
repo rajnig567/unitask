@@ -18,6 +18,7 @@ export 'package:unitask/provider/home_provider.dart';
 /// Widgets
 export 'package:unitask/screens/home/widgets/cart_tile.dart';
 export 'package:unitask/screens/home/widgets/product_tile.dart';
+export 'package:unitask/screens/home/widgets/category_chip.dart';
 
 /// Data Source
 export 'package:unitask/data/data_source.dart';

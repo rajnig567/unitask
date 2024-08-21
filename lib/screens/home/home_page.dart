@@ -46,37 +46,72 @@ class HomePage extends StatelessWidget {
             color: Colors.grey,
           ),
           Expanded(
-            child: Container(
-              color: AppColors.bgColor,
-              child: Consumer<HomeProvider>(
-                builder: (ctx, value, child) {
-                  if (value.uiState == UIState.loading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (value.uiState == UIState.error) {
-                    return Center(
-                      child: Text(value.message.toString()),
-                    );
-                  }
-                  return GridView.builder(
-                    itemCount: value.productList.length,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
-                    physics: const BouncingScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 15,
-                      crossAxisSpacing: 15,
-                      childAspectRatio: 0.8,
+            child: Consumer<HomeProvider>(builder: (ctx, value, child) {
+              if (value.uiState == UIState.loading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (value.uiState == UIState.error) {
+                return Center(
+                  child: Text(value.message.toString()),
+                );
+              }
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 50,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: value.categorizedProductList.keys.length,
+                            padding: const EdgeInsets.all(10),
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (_, index) {
+                              String category = value
+                                  .categorizedProductList.keys
+                                  .toList()[index];
+                              bool isSelected =
+                                  value.selectedCategory == category;
+                              return CategoryChip(
+                                category: category,
+                                isSelected: isSelected,
+                              );
+                            },
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.filter_alt_rounded),
+                        ),
+                      ],
                     ),
-                    itemBuilder: (_, index) {
-                      ProductModelProducts product = value.productList[index];
-                      return ProductTile(product: product);
-                    },
-                  );
-                },
-              ),
-            ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      color: AppColors.bgColor,
+                      child: GridView.builder(
+                        itemCount: value.productList.length,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 10),
+                        physics: const BouncingScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 15,
+                          crossAxisSpacing: 15,
+                          childAspectRatio: 0.8,
+                        ),
+                        itemBuilder: (_, index) {
+                          ProductModelProducts product =
+                              value.productList[index];
+                          return ProductTile(product: product);
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }),
           ),
         ],
       ),

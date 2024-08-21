@@ -15,8 +15,14 @@ class HomeProvider extends ChangeNotifier{
   String? _message;
   String? get message => _message;
 
-  final List<ProductModelProducts> _productList = [];
+  String _selectedCategory = '';
+  String get selectedCategory => _selectedCategory;
+
+  late List<ProductModelProducts> _productList = [];
   List<ProductModelProducts> get productList => _productList;
+
+  Map<String, List<ProductModelProducts>> _categorizedProductList = {};
+  Map<String, List<ProductModelProducts>> get categorizedProductList => _categorizedProductList;
 
   final Map<int, List<ProductModelProducts>> _cartList = {};
   Map<int, List<ProductModelProducts>> get cartList => _cartList;
@@ -31,6 +37,9 @@ class HomeProvider extends ChangeNotifier{
     try {
       final response = await dataSource.fetchProductData();
       _productList.addAll(response.products ?? []);
+      _categorizedProductList = _productList.groupBy((e) => e.category ?? '');
+      _selectedCategory = _categorizedProductList.keys.first;
+      _productList = _categorizedProductList[_selectedCategory] ?? [];
       _uiState = UIState.success;
       notifyListeners();
     } catch (error) {
@@ -38,6 +47,12 @@ class HomeProvider extends ChangeNotifier{
       _message = error.toString();
       notifyListeners();
     }
+  }
+
+  void displayProductsByCategory({required String category}){
+    _selectedCategory = category;
+    _productList = _categorizedProductList[category] ?? [];
+    notifyListeners();
   }
 
   void addToCart({required ProductModelProducts product}){
