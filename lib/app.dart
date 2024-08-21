@@ -1,3 +1,5 @@
+import 'package:unitask/provider/home_provider.dart';
+
 import 'core.dart';
 
 class MyApp extends StatefulWidget {
@@ -39,14 +41,19 @@ class _MyAppState extends State<MyApp> {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
-          home: const HomePage(),
+          home: ChangeNotifierProvider(
+            create: (_) => HomeProvider(
+              dataSource: DataSource(),
+            )..fetchProductData(),
+            child: const HomePage(),
+          ),
         ),
-        noInternetDialog(),
+        noInternetAlert(),
       ],
     );
   }
 
-  Widget noInternetDialog() {
+  Widget noInternetAlert() {
     return StreamBuilder<bool>(
       stream: _connectivity.networkStream,
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
