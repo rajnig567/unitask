@@ -31,6 +31,7 @@ class HomePage extends StatelessWidget {
         children: [
           Container(
             height: 50,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             alignment: Alignment.centerLeft,
             child: const Text(
               'Home',
@@ -57,58 +58,73 @@ class HomePage extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 50,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: value.categorizedProductList.keys.length,
-                            padding: const EdgeInsets.all(10),
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (_, index) {
-                              String category = value
-                                  .categorizedProductList.keys
-                                  .toList()[index];
-                              bool isSelected =
-                                  value.selectedCategory == category;
-                              return CategoryChip(
-                                category: category,
-                                isSelected: isSelected,
-                              );
-                            },
+                  if (value.categorizedProductList.keys.isNotEmpty) ...{
+                    SizedBox(
+                      height: 50,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount:
+                                  value.categorizedProductList.keys.length,
+                              padding: const EdgeInsets.all(10),
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (_, index) {
+                                String category = value
+                                    .categorizedProductList.keys
+                                    .toList()[index];
+                                bool isSelected =
+                                    value.selectedCategory == category;
+                                return CategoryChip(
+                                  category: category,
+                                  isSelected: isSelected,
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.filter_alt_rounded),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      color: AppColors.bgColor,
-                      child: GridView.builder(
-                        itemCount: value.productList.length,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 10),
-                        physics: const BouncingScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          mainAxisSpacing: 15,
-                          crossAxisSpacing: 15,
-                          childAspectRatio: 0.8,
-                        ),
-                        itemBuilder: (_, index) {
-                          ProductModelProducts product =
-                              value.productList[index];
-                          return ProductTile(product: product);
-                        },
+                          IconButton(
+                            onPressed: () => filterDialog(ctx),
+                            icon: const Icon(Icons.filter_alt_rounded),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
+                  } else ...{
+                    const Center(
+                      child: Text('No categories found!!'),
+                    ),
+                  },
+                  if (value.productList.isNotEmpty) ...{
+                    Expanded(
+                      child: Container(
+                        color: AppColors.bgColor,
+                        child: GridView.builder(
+                          itemCount: value.productList.length,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 10),
+                          physics: const BouncingScrollPhysics(),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: ctx.width > 950 ? 4 : 3,
+                            mainAxisSpacing: 15,
+                            crossAxisSpacing: 15,
+                            childAspectRatio: 0.8,
+                          ),
+                          itemBuilder: (_, index) {
+                            ProductModelProducts product =
+                                value.productList[index];
+                            return ProductTile(product: product);
+                          },
+                        ),
+                      ),
+                    ),
+                  } else ...{
+                    const Expanded(
+                      child: Center(
+                        child: Text('No products found!!'),
+                      ),
+                    ),
+                  },
                 ],
               );
             }),
@@ -192,6 +208,196 @@ class HomePage extends StatelessWidget {
           ],
         );
       }),
+    );
+  }
+
+  void filterDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return ChangeNotifierProvider<HomeProvider>.value(
+          value: Provider.of<HomeProvider>(context, listen: false),
+          child: Dialog(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    40.widthSizedBox,
+                    const Text(
+                      'Product Filter',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(
+                        Icons.cancel,
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: Consumer<HomeProvider>(builder: (ctx, value, child) {
+                    return ListView.builder(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                      itemCount: value.productTagList.keys.length,
+                      itemBuilder: (_, index) {
+                        String tag = value.productTagList.keys.toList()[index];
+                        return SizedBox(
+                          height: 25,
+                          child: _checkBoxTile(
+                            title: tag.toFirstCapital,
+                            value: value.selectedProductTagList.contains(tag),
+                            onChanged: (val) {},
+                            onTap: () {
+                              context
+                                  .read<HomeProvider>()
+                                  .updateTagSelection(tag: tag);
+                            },
+                          ),
+                        );
+                      },
+                    );
+                    // return Wrap(
+                    //   direction: Axis.horizontal,
+                    //   spacing: 10,
+                    //   runSpacing: 10,
+                    //   clipBehavior: Clip.antiAliasWithSaveLayer,
+                    //   runAlignment: WrapAlignment.spaceEvenly,
+                    //   children: value.productTagList.keys
+                    //       .map(
+                    //         (e) => SizedBox(
+                    //           height: 25,
+                    //           child: _checkBoxTile(
+                    //             title: e.toFirstCapital,
+                    //             value: value.selectedProductTagList
+                    //                 .contains(e),
+                    //             onChanged: (val) {},
+                    //             onTap: () {
+                    //               context
+                    //                   .read<HomeProvider>()
+                    //                   .updateTagSelection(tag: e);
+                    //             },
+                    //           ),
+                    //         ),
+                    //       )
+                    //       .toList(),
+                    // );
+                  }),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        context.read<HomeProvider>().applyTagFilter();
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: AppColors.redColor,
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(0, 1),
+                              blurRadius: 10,
+                              spreadRadius: 1,
+                              color: AppColors.redColor.withOpacity(0.4),
+                            ),
+                          ],
+                        ),
+                        child: const Text(
+                          'Apply',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    20.widthSizedBox,
+                    GestureDetector(
+                      onTap: () {
+                        context.read<HomeProvider>().clearTagSelection();
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: AppColors.redColor,
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(0, 1),
+                              blurRadius: 10,
+                              spreadRadius: 1,
+                              color: AppColors.redColor.withOpacity(0.4),
+                            ),
+                          ],
+                        ),
+                        child: const Text(
+                          'Clear',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                20.heightSizedBox,
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _checkBoxTile({
+    required String title,
+    required bool value,
+    Function(bool?)? onChanged,
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(
+        children: [
+          AbsorbPointer(
+            child: SizedBox(
+              height: 25,
+              width: 25,
+              child: Checkbox(
+                value: value,
+                onChanged: onChanged,
+                activeColor: AppColors.redColor,
+              ),
+            ),
+          ),
+          5.widthSizedBox,
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
