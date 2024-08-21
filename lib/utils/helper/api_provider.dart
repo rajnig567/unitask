@@ -20,7 +20,6 @@ class APIProvider {
     };
 
     _dio = Dio(dioOptions);
-    print('APIProvider init');
 
     _dio.interceptors.add(
       InterceptorsWrapper(

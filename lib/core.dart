@@ -12,6 +12,13 @@ export 'package:unitask/utils/extentions/extension.dart';
 export 'package:unitask/utils/helper/api_provider.dart';
 export 'package:unitask/utils/helper/connectivity.dart';
 
+/// Providers
+export 'package:unitask/provider/home_provider.dart';
+
+/// Widgets
+export 'package:unitask/screens/home/widgets/cart_tile.dart';
+export 'package:unitask/screens/home/widgets/product_tile.dart';
+
 /// Data Source
 export 'package:unitask/data/data_source.dart';
 
