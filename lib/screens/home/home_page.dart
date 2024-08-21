@@ -265,31 +265,6 @@ class HomePage extends StatelessWidget {
                         );
                       },
                     );
-                    // return Wrap(
-                    //   direction: Axis.horizontal,
-                    //   spacing: 10,
-                    //   runSpacing: 10,
-                    //   clipBehavior: Clip.antiAliasWithSaveLayer,
-                    //   runAlignment: WrapAlignment.spaceEvenly,
-                    //   children: value.productTagList.keys
-                    //       .map(
-                    //         (e) => SizedBox(
-                    //           height: 25,
-                    //           child: _checkBoxTile(
-                    //             title: e.toFirstCapital,
-                    //             value: value.selectedProductTagList
-                    //                 .contains(e),
-                    //             onChanged: (val) {},
-                    //             onTap: () {
-                    //               context
-                    //                   .read<HomeProvider>()
-                    //                   .updateTagSelection(tag: e);
-                    //             },
-                    //           ),
-                    //         ),
-                    //       )
-                    //       .toList(),
-                    // );
                   }),
                 ),
                 Row(

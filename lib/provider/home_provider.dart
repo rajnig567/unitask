@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
 
 import 'package:unitask/core.dart';
 
@@ -28,12 +26,10 @@ class HomeProvider extends ChangeNotifier {
   final Map<int, List<ProductModelProducts>> _cartList = {};
   Map<int, List<ProductModelProducts>> get cartList => _cartList;
 
-  // late List<String> _productTagsList = [];
-  // List<String> get productTagList => _productTagsList;
   final Map<String, List<ProductModelProducts>> _productTagsList = {};
   Map<String, List<ProductModelProducts>> get productTagList => _productTagsList;
 
-  late List<String> _selectedProductTagsList = [];
+  late final List<String> _selectedProductTagsList = [];
   List<String> get selectedProductTagList => _selectedProductTagsList;
 
   UIState _uiState = UIState.loading;
